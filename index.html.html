@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #03152d;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+        }
+        .balloons {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .balloon {
+            position: absolute;
+            bottom: 100px;
+            animation: float 6s linear infinite;
+            height: 250px;
+            width: 250px;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
+        }
+        .cake-container {
+            position: relative;
+            margin: 100px auto 0;
+            width: 500px;
+            height: 400px;
+        }
+        .cake {
+            width: 450px;
+            height: 450px;
+        }
+        .candle {
+            position: absolute;
+            top: 45px;
+            left: 48%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 60px;
+            background: red;
+            border-radius: 5px;
+        }
+        .flame {
+            position: absolute;
+            top: -20px;
+            left: 10%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 30px;
+            background: orange;
+            border-radius: 50%;
+            animation: flicker 0.3s infinite alternate;
+        }
+        @keyframes flicker {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.1); }
+        }
+        .gift-box {
+            margin: 50px auto;
+            cursor: pointer;
+        }
+        .hidden-note {
+            display: none;
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 50%;
+            text-align: left;
+        }
+        .video-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .scroll-btns {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .scroll-btns button {
+            background-color: #f8b400;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .blow-btn {
+            background-color: #ff4d4d;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <audio id="bg-music" autoplay loop>
+        <source src="happy-birthday-314197.mp3" type="audio/mp3">
+    </audio>
+    <h1>🎉 Happy Birthday 🎉</h1>
+    <div class="balloons">
+        <img src="ballon.png" class="balloon" style="left: 0%; animation-duration: 3s;">
+        <img src="ballon.png" class="balloon" style="left: 20%; animation-duration: 3s;">
+        <img src="ballon.png" class="balloon" style="left: 40%; animation-duration: 3s;">
+        <img src="ballon.png" class="balloon" style="left: 60%; animation-duration: 3s;">
+        <img src="ballon.png" class="balloon" style="left: 80%; animation-duration: 3s;">
+    </div>
+    <div class="cake-container">
+        <img src="Cake cho.png" alt="Birthday Cake" class="cake">
+        <div class="candle">
+            <div class="flame" id="flame"></div>
+        </div>
+    </div>
+    <button class="blow-btn" onclick="blowCandle()">Blow Candle 🎂</button>
+    <button class="gift-box" onclick="showNote()">🎁 Gift</button>
+    <div class="hidden-note" id="note">
+        <p>Happy Birthday, Dear! 🌙✨<br> If the universe ever sculpted perfection, it must have taken a pause, sighed in admiration, and whispered your name. Because, honestly, how does one even exist with such an exquisite blend of beauty, brilliance, and bewitching chaos? You’re a paradox—graceful yet wild, soft yet fierce, and somehow, you make even time jealous, for it always lingers a little longer when you're around. I could say the world is fortunate to have you in it. The way you light up a room, the way your laughter feels like a melody only the privileged get to hear… It’s almost unfair. I’m convinced even the stars feel slightly insecure knowing they have competition. Today, the world celebrates you, but honestly, it should do that every day. Because someone like you isn’t just born; you’re crafted—with love, with stardust, with a little mischief and just enough trouble to keep life captivating 😉. They say “Home is not a place, but a person.” If that’s true, then you, are the safest, warmest, and most beautiful place in the world. Happy Birthday to the most mesmerizing, infuriatingly amazing, and dangerously lovable soul to ever exist. Now, go be the queen you are—because the world is merely your kingdom. 😉👑 Lastly, I would say, if I were granted a fortune for every fleeting moment your presence stole my breath and set my heart into a celestial waltz, I would rival emperors in wealth. Yet, alas, riches pale in comparison to the spellbinding rapture of being utterly and irrevocably bewitched by you. 😏</p>
+        <button onclick="showVideo()">Next 🎥</button>
+    </div>
+    <div class="video-section" id="video">
+        <video width="400" controls>
+            <source src="Birthday.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="scroll-btns">
+        <button onclick="scrollUp()">⬆️</button>
+        <button onclick="scrollDown()">⬇️</button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let audio = document.getElementById("bg-music");
+            audio.volume = 0.02; // Reduced to 1% (-50dB, very smooth background music)
+            audio.play().catch(error => {
+                console.log("Autoplay blocked, retrying...");
+                audio.muted = true;
+                audio.play();
+                setTimeout(() => {
+                    audio.muted = false;
+                }, 500);
+            });
+        });
+        function showNote() {
+            document.getElementById('note').style.display = 'block';
+        }
+        function showVideo() {
+            document.getElementById('video').style.display = 'block';
+        }
+        function scrollUp() {
+            window.scrollBy({ top: -500, behavior: 'smooth' });
+        }
+        function scrollDown() {
+            window.scrollBy({ top: 500, behavior: 'smooth' });
+        }
+        function blowCandle() {
+            let flame = document.getElementById('flame');
+            flame.style.transition = 'opacity 1s';
+            flame.style.opacity = 0;
+            setTimeout(() => {
+                flame.style.display = 'none';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
